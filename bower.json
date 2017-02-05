@@ -1,0 +1,19 @@
+{
+  "name": "CRUD",
+  "authors": [
+    "Piotr Wieczorek <piotrwieczorek@wp.eu>"
+  ],
+  "description": "crud",
+  "main": "",
+   "dependencies": {
+    
+	"bootstrap": "3.3.7",
+	"angular": "1.6.1",
+	"dirPagination": "1.0.0",
+	"angular-animate": "1.6.1",
+	"angular-touch": "1.6.1",
+	"angular-bootstrap": "2.5.0"
+  },
+  "license": "MIT",
+  "homepage": ""
+}
