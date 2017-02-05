@@ -78,7 +78,6 @@ crudApp.controller("ctrlCRUD",['$scope','$filter','$http','$rootScope','$uibModa
 				
 	$scope.deleteInfo = function(info){
 		
-		alert("want to");
 		
 		$http.post('databaseFiles/deleteProduct.php',{"del_id":info.productCode}).then(function(data){
 		
