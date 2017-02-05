@@ -1,0 +1,354 @@
+<html ng-app="crudApp">
+
+<head>
+
+	<title>CRUD</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap.min.css">	
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css">
+
+	
+	<script src="vendor/angular/angular.min.js"></script>	
+	<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script src="vendor/angular-touch/angular-touch.js"></script>	
+	<script src="vendor/angular-animate/angular-animate.js"></script>	
+	<script src="js/dirPagination.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="container wrapper" ng-controller="ctrlCRUD">
+
+</br>
+
+<div class="row">
+
+	<div class="col-md-3"></div>
+	
+	<div class="col-md-3">
+		<button class="btn btn-primary" ng-click="showModal1()" >add product <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+	</div>
+	
+	<div class="col-md-3">
+		<input type="text" class="form-control" placeholder="Search..."  ng-model="search">
+	</div>
+	
+	<div class="col-md-3"></div>
+  
+</div>
+<!-- row -->
+</br>
+
+
+
+
+
+<!------------------------------- PRODUCT TABLE ------------------------------->
+
+
+<div class="col-md-10 col-md-offset-1">
+	<dir-pagination-controls
+		max-size="5"
+		direction-links="true"
+		boundary-links="true" >
+	</dir-pagination-controls>                   
+</div>
+
+<div class="col-md-10 col-md-offset-1">
+            
+	<table class="small table table-striped table-condensed table-hover">
+	
+		<thead>
+
+			<tr>
+			
+				<th ng-click="sort('productCode')">Code&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productCode'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="productName" ng-click="sort('productName')">Name&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productName'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="productLine" ng-click="sort('productLine')">Line&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productLine'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="productScale" ng-click="sort('productScale')">Scale&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productScale'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="productVendor" ng-click="sort('productVendor')">Vendor&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productVendor'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="productDescription" ng-click="sort('productDescription')">Description&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='productDescription'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="quantityInStock" ng-click="sort('quantityInStock')">quantityInStock&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='quantityInStock'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="buyPrice" ng-click="sort('buyPrice')">buyPrice&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='buyPrice'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+				
+				<th class="MSRP" ng-click="sort('MSRP')">MSRP&nbsp;
+				<span class="glyphicon sort-icon" ng-show="sortKey=='MSRP'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+				</th>
+
+			</tr>
+			
+		</thead>
+
+		<tbody>
+		
+			<tr dir-paginate="item in items |orderBy:sortKey:reverse|filter:search|itemsPerPage:5" >
+				
+				<td>{{item.productCode}}</td>
+				<td>{{item.productName}}</td>
+				<td>{{item.productLine}}</td>
+				<td>{{item.productScale}}</td>
+				<td>{{item.productVendor}}</td>
+				<td>{{item.productDescription}}</td>
+				<td>{{item.quantityInStock}}</td>
+				<td>{{item.buyPrice}}</td>
+				<td>{{item.MSRP}}</td>
+				
+				<td>					
+					<button class="btn btn-warning" ng-click="showModal(item) " title="Edit"><span class="glyphicon glyphicon-edit"></span></button>
+				</td>
+
+				<td>
+					<button class="btn btn-danger" ng-click="deleteInfo(item)" title="Delete"><span class="glyphicon glyphicon-trash"></span></button>
+				</td>
+				
+			</tr>
+			
+		</tbody>
+		
+	</table>
+			 
+</div>
+			
+
+			
+<!------------------NEW PRODUCT FORM--------------------------------------------->	 
+ 
+<div >
+	<script type="text/ng-template" id="newProduct.html">
+		
+		<div class="modal-header">
+		<h3 class="modal-title">add new product</h3>
+		</div>
+		
+		<div class="modal-body">
+
+			<form class="form-horizontal alert alert-warning " name="prodList" id="prodForm" >
+
+				<div class="form-group">
+					<label for="Name">product code:</label>
+					<input type="text" name="productCode" class="form-control" placeholder="enter product code" ng-Maxlength="15" ng-model="prodInfo.productCode" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productCode.$invalid">required (no more than 15 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productName:</label>
+					<input type="text" name="productName" class="form-control" placeholder="entere product name" ng-Maxlength="70" ng-model="prodInfo.productName" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productName.$invalid">required (no more than 70 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productLine:</label>
+					<input type="text" name="productLine" class="form-control" placeholder="enter product line" ng-Maxlength="50" ng-model="prodInfo.productLine" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productLine.$invalid">required (no more than 50 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productScale:</label>
+					<input type="text" name="productScale" class="form-control" placeholder="enter product scale" ng-Maxlength="10" ng-model="prodInfo.productScale" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productScale.$invalid">required (no more than 10 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productVendor:</label>
+					<input type="text" name="productVendor" class="form-control" placeholder="enter product vendor" ng-Maxlength="50" ng-model="prodInfo.productVendor" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productVendor.$invalid">required (no more than 50 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productDescription:</label>
+					<input type="text" name="productDescription" class="form-control" placeholder="enter product description"  ng-model="prodInfo.productDescription" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productDescription.$invalid">required</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">quantityInStock:</label>
+					<input type="number" name="quantityInStock" class="form-control" placeholder="enter quantity in stock" ng-model="prodInfo.quantityInStock" min="0" max="32767" integer autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.quantityInStock.$invalid">required (integer field 0-32767)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">buyPrice:</label>
+					<input type="number" name="buyPrice" class="form-control" placeholder="enter buy price" ng-model="prodInfo.buyPrice" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.buyPrice.$invalid ">required (numeric double field)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">MSRP:</label>
+					<input type="number" name="MSRP" class="form-control" placeholder="enter MSRP" ng-model="prodInfo.MSRP" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01"autofocus required />
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.MSRP.$invalid ">required (numeric double field)</p>
+				</div>
+
+			</form>   
+		</div>
+		
+		<div class="modal-footer">
+			<p class="text-danger" ng-show="prodList.$invalid">Fill all fields!</p>
+			<button class="btn btn-primary" ng-disabled="prodList.$invalid" ng-click="ok(prodInfo)">add</button>
+			<button class="btn btn-warning" ng-click="cancel()">cancel</button>
+		</div>
+		
+	</script>
+
+</div> 
+
+
+
+
+<!--------------------UPDATE PRODUCT FORM------------------------------------------------->	 
+<div>
+
+	<script type="text/ng-template" id="updateProduct.html">
+		
+		<div class="modal-header">
+		<h3 class="modal-title">update details</h3>
+		</div>
+		
+		<div class="modal-body">
+		
+			<form class="form-horizontal alert alert-warning" name="prodList" id="editForm"  >
+			
+				<div class="form-group">
+					<label for="productCode">productCode:</label>
+					<input type="text" name="productCode" class="form-control" ng-model="currentUser.productCode" ng-Maxlength="15" ng-value="{{currentUser.productCode}}"required >
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productCode.$invalid">required (no more than 15 characters)</p>
+				</div>
+				  
+				<div class="form-group">
+					<label for="Name">productName:</label>
+					<input type="text" name="productName" class="form-control" ng-Maxlength="70" ng-model="currentUser.productName" value="{{currentUser.productName}}"required >
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productName.$invalid">required (no more than 70 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productLine:</label>
+					<input type="text" name="productLine" class="form-control" ng-Maxlength="50" ng-model="currentUser.productLine" value="{{currentUser.productLine}}" required>
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productLine.$invalid">required (no more than 50 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productScale:</label>
+					<input type="text" name="productScale" class="form-control" ng-Maxlength="10" ng-model="currentUser.productScale" value="{{currentUser.productScale}}" required>
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productScale.$invalid">required (no more than 10 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productVendor:</label>
+					<input type="text" name="productVendor" class="form-control" ng-Maxlength="50" ng-model="currentUser.productVendor" value="{{currentUser.productVendor}}" required>
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.productVendor.$invalid">required (no more than 50 characters)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">productDescription:</label>
+					<input type="text" name="productDescription" class="form-control"  ng-model="currentUser.productDescription" value="{{currentUser.productDescription}}" required>
+				</div><div class="form-group">
+					<p class="text-danger" ng-show="prodList.productDescription.$invalid">required </p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">quantityInStock:</label>
+					<input type="number" name="quantityInStock" class="form-control"  ng-model="currentUser.quantityInStock" value="{{currentUser.quantityInStock}}" min="0" max="32767" integer required>
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.quantityInStock.$invalid">required (integer field 0-32767)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">buyPrice:</label>
+					<input type="number" name="buyPrice" class="form-control" ng-model="currentUser.buyPrice" value="{{currentUser.buyPrice}}" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required>
+				</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.buyPrice.$invalid">required (numeric double field)</p>
+				</div>
+
+				<div class="form-group">
+					<label for="Name">MSRP:</label>
+					<input type="number" name="MSRP" class="form-control" ng-model="currentUser.MSRP" value="{{currentUser.MSRP}}" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required>
+					</div>
+				<div class="form-group">
+					<p class="text-danger" ng-show="prodList.MSRP.$invalid">required (numeric double field)</p>
+				</div>
+
+			</form>
+			
+		</div>
+		
+		<div class="modal-footer">
+		
+			<p class="text-danger" ng-show="prodList.$invalid">Fill all fields!</p>
+			<button class="btn btn-primary" ng-disabled="prodList.$invalid" ng-click="ok()">update</button>
+			<button class="btn btn-warning" ng-click="cancel()">cancel</button>
+			
+		</div>
+		
+	</script>
+	
+</div>    
+    
+
+</div>
+<!-- ng-controller ----end----->
+
+
+<script src="js/angular-script.js"></script>
+
+
+
+
+</body>
+</html>
